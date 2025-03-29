@@ -1,15 +1,18 @@
 #pragma once
 
 #define TTY_ADDR   0xB8000
-#define VGA_HEIGHT 480
-#define VGA_WIDTH  480
+#define VGA_HEIGHT 25
+#define VGA_WIDTH  80
 
 #include "../c.h"
+#include <stdarg.h>
 
 STRUCT{
 	u16 x;
 	u16 y;
 	u16 col;
+	char *buff;
+	u16 off;
 } TTY;
 ENUM{
 	VGA_COLOR_BLACK = 0,
@@ -30,8 +33,11 @@ ENUM{
 	VGA_COLOR_WHITE = 15,
 } vgaColor;
 
-void cleartty(TTY *tty);
-void ttyInit(const vgaColor fg, const vgaColor bg, TTY *tty);
-void putChar(const char c, TTY *tty);
-void setColor(u8 col, TTY *tty);
+void cleartty();
+void ttyInit(void *buff, const vgaColor fg, const vgaColor bg);
+void putChar(const char c);
+void setColor(u8 col);
 u8   createColor(vgaColor fg, vgaColor bg); 
+void kprint(char *fmt, ...);
+
+extern TTY *tty;
