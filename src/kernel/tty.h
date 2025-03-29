@@ -1,8 +1,8 @@
 #pragma once
 
 #define TTY_ADDR   0xB8000
-#define VGA_HEIGHT 80
-#define VGA_WIDTH  25
+#define VGA_HEIGHT 480
+#define VGA_WIDTH  480
 
 #include "../c.h"
 

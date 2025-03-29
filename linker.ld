@@ -8,6 +8,7 @@ PHDRS {
 
 SECTIONS{
 	. = 2M;
+	kernel_start = .;
 	
 	.text BLOCK(4K) : ALIGN(4K){
 		*(.multiboot)
@@ -23,4 +24,6 @@ SECTIONS{
 		*(.COMMON)
 		*(.bss)
 	} :bss
+
+	kernel_end = .;
 }
