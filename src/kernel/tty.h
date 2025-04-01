@@ -11,8 +11,8 @@ STRUCT{
 	u16 x;
 	u16 y;
 	u16 col;
-	char *buff;
 	u16 off;
+	u16 *buff;
 } TTY;
 ENUM{
 	VGA_COLOR_BLACK = 0,

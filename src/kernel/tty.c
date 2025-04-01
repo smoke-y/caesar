@@ -1,5 +1,6 @@
 #include "../c.h"
 #include "../libc/libc.h"
+#include "pageAlloc.h"
 #include "tty.h"
 
 static u16* tty_addr = ((u16*)TTY_ADDR);
@@ -20,28 +21,37 @@ void cleartty(){
 void ttyInit(void *buff, const vgaColor fg, const vgaColor bg){
 	tty->buff = buff;
 	tty->off = 0;
+	tty->x = 0;
 	u8 col = createColor(fg, bg);
 	setColor(col);
-	u16 shiftCol = (u16)col << 8;
-	cleartty();	
+	memset(buff, (u16)' ' | tty->col, PAGE_SIZE);
+	cleartty();
 };
-
-void putChar(const char c){
-	if(c == '\n'){
-		tty->y += 1;
-		tty->x = 0;
-		return;
-	};
-	tty_addr[tty->x + tty->y*VGA_WIDTH] = c | tty->col;
-	tty->x++;
-	if(tty->x == VGA_WIDTH){
-		tty->x = 0;
-		tty->y += 1;
-	};
+void putChar(const char c) {
+    if (c == '\n' || tty->x >= VGA_WIDTH) {
+        tty->x = 0;
+        
+        for(u32 y = 0; y < VGA_HEIGHT - 1; y++){
+            for(u32 x = 0; x < VGA_WIDTH; x++){
+                u32 dest = x + y * VGA_WIDTH;
+                u32 src = x + (y + 1) * VGA_WIDTH;
+                tty_addr[dest] = tty_addr[src];
+            }
+        }
+        
+        for(u32 x = 0; x < VGA_WIDTH; x++){
+            u32 idx = x + (VGA_HEIGHT - 1) * VGA_WIDTH;
+            tty_addr[idx] = ' ' | tty->col;
+        }
+    }else{
+        tty_addr[tty->x + (VGA_HEIGHT - 1) * VGA_WIDTH] = c | tty->col;
+        tty->x++;
+    }
 };
 
 void putCharBuff(char c){
-	tty->buff[tty->off++] = c;
+	tty->buff[tty->off] = (u16)c | tty->col;
+	tty->off = (tty->off + 1) % PAGE_SIZE;
 };
 void kprint(char *fmt, ...){
     const u32 len = strlen(fmt);
@@ -72,7 +82,7 @@ void kprint(char *fmt, ...){
                 case 'p':{
                     putCharBuff('0');
                     putCharBuff('x');
-                    s64 num = va_arg(args, s64);
+                    s64 num = va_arg(args, s32);
                     if(num == 0){
                         putCharBuff('0');
                         break;
@@ -103,6 +113,8 @@ void kprint(char *fmt, ...){
         }else putCharBuff(fmt[x]);
     };
     va_end(args);
-    count = tty->off - count;
-    for(u32 x=0; x<count; x++) putChar(tty->buff[tty->off - count + x]);
+    while(count != tty->off){
+	    putChar(tty->buff[count]);
+	    count = (count+1) % PAGE_SIZE;
+    };
 };

@@ -11,8 +11,8 @@ void initPageAlloc(multiboot_info_t *info, PageAllocContext *context){
 	 * mem_lower which tells the number of pages below 1MB. kernel_start and kernel_end is defined in boot.S
 	*/
 	extern void *kernel_start, *kernel_end;
-	u32 kernelEndAlign = alignUp((u32)kernel_end, PAGE_SIZE);
-	u32 totalAvailRam = (info->mem_upper * 1024) - (kernelEndAlign - alignDown((u32)kernel_start, PAGE_SIZE));
+	u32 kernelEndAlign = alignUp((u32)&kernel_end, PAGE_SIZE);
+	u32 totalAvailRam = (info->mem_upper * 1024) - (kernelEndAlign - alignDown((u32)&kernel_start, PAGE_SIZE));
 	context->pageCount = totalAvailRam / PAGE_SIZE;
 	context->bitmaps = (u32*)kernelEndAlign;
 	memset((void*)kernelEndAlign, 0, PAGE_SIZE);
