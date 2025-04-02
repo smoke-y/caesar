@@ -1,14 +1,16 @@
 #include "../c.h"
 
+#include "gdt.h"
 #include "pageAlloc.h"
 #include "tty.h"
 #include "caesar.h"
 #include "multiboot.h"
 
 #include "pageAlloc.c"
+#include "gdt.c"
 
 static Caesar caesar;
-extern void *kernel_start, *kernel_end;
+extern void *kernel_start, *kernel_end, *code_start, *code_end, *data_start, *data_end;
 TTY *tty = &caesar.tty;
 
 void caesar_main(multiboot_info_t *info, u32 magicNum){
@@ -19,8 +21,11 @@ void caesar_main(multiboot_info_t *info, u32 magicNum){
 	if(magicNum != MULTIBOOT_BOOTLOADER_MAGIC){
 		kprint("[-] magic number not verified(%d != %d)\n", magicNum, MULTIBOOT_BOOTLOADER_MAGIC);
 		return;
-	}else kprint("[+] multiboot magic number verified\n");
+	}
+	kprint("[+] code_start: %p  code_end: %p\n", &code_start, &code_end);
+	kprint("[+] data_start: %p  data_end: %p\n", &data_start, &data_end);
+	kprint("[+] page start: %p  page count: %d\n", caesar.pageAllocContext.bitmaps, caesar.pageAllocContext.pageCount);
 
-	kprint("[+] kernel_start: %p  kernel_end: %p\n", &kernel_start, &kernel_end);
-	kprint("[+] page start: %p  page count: %d  tty using 1 page: %p\n", caesar.pageAllocContext.bitmaps, caesar.pageAllocContext.pageCount, ttyBuff);
+	createGDT();
+	kprint("[+] loaded gdt table to cpu\n");
 };

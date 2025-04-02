@@ -18,12 +18,12 @@ def run(cmd: str) -> None:
     subRun(cmd, shell=True)
 
 if "core" in argv or clean:
-    run(AS + "src/kernel/boot.S -nostdlib -o bin/boot.o")
+    run(AS + "src/kernel/gdt.S src/kernel/boot.S -nostdlib -o bin/core_as.o")
     run(COMP + "-c src/kernel/caesar.c -std=c2x -ffreestanding -nostdlib -o bin/core.o -lgcc")
 if "libc" in argv or clean:
     run(COMP + "-c src/libc/libc.c -std=c2x -ffreestanding -nostdlib -o bin/libc.o -lgcc")
 if "tty" in argv or clean:
     run(COMP + "-c src/kernel/tty.c -std=c2x -ffreestanding -nostdlib -o bin/tty.o -lgcc")
 
-modulesOuts = " ".join(["bin/" + x + ".o" for x in modules]) + " bin/boot.o"
+modulesOuts = " ".join(["bin/" + x + ".o" for x in modules]) + " bin/core_as.o"
 run(COMP + "-T linker.ld -o bin/caesar.bin -ffreestanding -nostdlib " + modulesOuts + " -lgcc")
