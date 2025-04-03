@@ -40,5 +40,5 @@ void createGDT(){
 		kprint("%p[%d]  %d  %d\n", base, size, flag, acc);
 	};
 	GDTR gdtr = {sizeof(gdt)-1, gdt};
-	_gdt_load_cpu(&gdtr, 0x08, 0x10);
+	_gdt_load_cpu(&gdtr, CODE_SEG, DATA_SEG);
 };

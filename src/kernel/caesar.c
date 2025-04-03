@@ -8,6 +8,7 @@
 
 #include "pageAlloc.c"
 #include "gdt.c"
+#include "idt.c"
 
 static Caesar caesar;
 extern void *kernel_start, *kernel_end, *code_start, *code_end, *data_start, *data_end;
@@ -28,4 +29,7 @@ void caesar_main(multiboot_info_t *info, u32 magicNum){
 
 	createGDT();
 	kprint("[+] loaded gdt table to cpu\n");
+
+	loadIDTToCPU();
+	kprint("[+] loaded idt table to cpu\n");
 };

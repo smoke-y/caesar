@@ -2,6 +2,9 @@
 
 #include "../c.h"
 
+#define CODE_SEG 0x08
+#define DATA_SEG 0x10
+
 ENUM{
 	GDT_ACCESS    = 1<<0,   //CPU will set this bit to 1 when the segment is accessed
 	GDT_RW        = 1<<1,   //code seg[0: read not allowed], data seg[0: write not allowed]
