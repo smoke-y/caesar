@@ -18,7 +18,7 @@ def run(cmd: str) -> None:
     subRun(cmd, shell=True)
 
 if "core" in argv or clean:
-    run(AS + "src/kernel/core.S src/kernel/boot.S -nostdlib -o bin/core_as.o")
+    run(AS + "src/kernel/core.S -nostdlib -o bin/core_as.o")
     run(COMP + "-c src/kernel/caesar.c -std=c2x -ffreestanding -nostdlib -o bin/core.o -lgcc")
 if "libc" in argv or clean:
     run(COMP + "-c src/libc/libc.c -std=c2x -ffreestanding -nostdlib -o bin/libc.o -lgcc")

@@ -1,6 +1,7 @@
 #include "../c.h"
 #include "../libc/libc.h"
 #include "pageAlloc.h"
+#include "tty.h"
 
 u32 alignDown(u32 num, u32 alignment){ return num & ~(alignment - 1); };
 u32 alignUp(u32 num, u32 alignment){ return (num + alignment - 1) & ~(alignment - 1); };
@@ -29,7 +30,7 @@ void *allocPage(PageAllocContext *context){
 			return starting + PAGE_SIZE*(x + off);
 		};
 	};
-	//TODO: print error
+	kprint("[ERROR]: no more free pages left :(\n");
 	return nullptr;	
 };
 void freePage(void *ptr, PageAllocContext *context){

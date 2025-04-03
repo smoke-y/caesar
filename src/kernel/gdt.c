@@ -30,15 +30,6 @@ void createGDT(){
 		GDT_ENTRY(0x0, 0xFFFFF, GDT_P | GDT_DPL_HIGH | GDT_S | GDT_E | GDT_RW, GDT_FLAG_G_KIB | GDT_FLAG_DB_32),
 		GDT_ENTRY(0x0, 0xFFFFF, GDT_P | GDT_DPL_HIGH | GDT_S | GDT_RW, GDT_FLAG_G_KIB | GDT_FLAG_DB_32),
 	};
-	kprint("---------[GDT]---------\n");
-	for(u32 x=0; x<GDT_ENTRY_COUNT; x++){
-		GDTEntry entry = gdt[x];
-		u32 base = (u32)entry.baseLow  | (u32)entry.baseHigh<<24;
-		u32 size = (u32)entry.limitLow | (u32)entry.limitHigh<<16;
-		u32 flag = (u32)entry.flags;
-		u32 acc  = (u32)entry.access;
-		kprint("%p[%d]  %d  %d\n", base, size, flag, acc);
-	};
 	GDTR gdtr = {sizeof(gdt)-1, gdt};
 	_gdt_load_cpu(&gdtr, CODE_SEG, DATA_SEG);
 };
