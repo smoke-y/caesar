@@ -1,6 +1,5 @@
 #include "../c.h"
 
-#include "gdt.h"
 #include "pageAlloc.h"
 #include "tty.h"
 #include "caesar.h"
@@ -12,6 +11,7 @@
 
 static Caesar caesar;
 extern void *kernel_start, *kernel_end, *code_start, *code_end, *data_start, *data_end;
+void __attribute__((cdecl)) _enable_protected_mode();
 TTY *tty = &caesar.tty;
 
 void caesar_main(multiboot_info_t *info, u32 magicNum){
@@ -27,9 +27,9 @@ void caesar_main(multiboot_info_t *info, u32 magicNum){
 	kprint("[+] data_start: %p  data_end: %p\n", &data_start, &data_end);
 	kprint("[+] page start: %p  page count: %d\n", caesar.pageAllocContext.bitmaps, caesar.pageAllocContext.pageCount);
 
-	createGDT();
-	kprint("[+] loaded gdt table to cpu\n");
-
 	loadIDTToCPU();
 	kprint("[+] loaded idt table to cpu\n");
+	
+	createGDTAndEnableProtectedMode();
+	kprint("[+] loaded gdt table to cpu\n[+] enabled protected mode\n");
 };

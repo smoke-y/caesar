@@ -17,8 +17,8 @@ STRUCT{
 	GDTEntry *entries;
 } __attribute__((packed)) GDTR;
 
-void __attribute__((cdecl)) _gdt_load_cpu(GDTR *gdtr, u16 codeSeg, u16 dataSeg);
-void createGDT(){
+void __attribute__((cdecl)) _gdt_load_cpu_and_enable_protected_mode(GDTR *gdtr, u16 codeSeg, u16 dataSeg);
+void createGDTAndEnableProtectedMode(){
 	extern void *data_start, *data_end, *code_start, *code_end;
 	GDTEntry gdt[GDT_ENTRY_COUNT] = {
 		GDT_ENTRY(0, 0, 0, 0),
@@ -31,5 +31,5 @@ void createGDT(){
 		GDT_ENTRY(0x0, 0xFFFFF, GDT_P | GDT_DPL_HIGH | GDT_S | GDT_RW, GDT_FLAG_G_KIB | GDT_FLAG_DB_32),
 	};
 	GDTR gdtr = {sizeof(gdt)-1, gdt};
-	_gdt_load_cpu(&gdtr, CODE_SEG, DATA_SEG);
+	_gdt_load_cpu_and_enable_protected_mode(&gdtr, CODE_SEG, DATA_SEG);
 };

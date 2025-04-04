@@ -32,10 +32,10 @@ jmp 1b
 
 .size _start, . - _start
 
-.global _gdt_load_cpu
+.global _gdt_load_cpu_and_enable_protected_mode
 .global _idt_load_cpu
 
-_gdt_load_cpu:
+_gdt_load_cpu_and_enable_protected_mode:
     	pushl %ebp
     	movl %esp, %ebp
 
@@ -52,6 +52,10 @@ _gdt_load_cpu:
     */
     	movl 8(%ebp), %eax
     	lgdt (%eax)
+	cli
+	movl %cr0, %eax
+	or %al, 1
+	movl %eax, %cr0
 
     	movl 12(%ebp), %eax
     	pushl %eax
@@ -67,6 +71,7 @@ _gdt_load_cpu:
 
 	movl %ebp, %esp
 	popl %ebp
+	sti
 	ret
 
 _idt_load_cpu:
