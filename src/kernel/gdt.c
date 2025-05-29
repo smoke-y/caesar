@@ -1,14 +1,13 @@
 #include "gdt.h"
-#include "tty.h"
 
 #define GDT_ENTRY(base, limit, acc, flag){	\
-	((u32)(limit) & 0x0000FFFF),		\
-	((u32)base & 0x00FFFFFF),		\
-	(acc),					\
-	(((u32)(limit) & 0xFFFF0000) >> 16),	\
-	(flag),					\
-	(((u32)base & 0xFF000000) >> 24),	\
-	}					\
+    ((u32)(limit) & 0x0000FFFF),		\
+    ((u32)base & 0x00FFFFFF),		\
+    (acc),					\
+    (((u32)(limit) & 0xFFFF0000) >> 16),	\
+    (flag),					\
+    (((u32)base & 0xFF000000) >> 24),	\
+}					\
 
 #define GDT_ENTRY_COUNT 3
 

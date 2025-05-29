@@ -31,7 +31,7 @@ void *allocPage(PageAllocContext *context){
 		};
 	};
 	kprint("[ERROR]: no more free pages left :(\n");
-	return nullptr;	
+	return 0;	
 };
 void freePage(void *ptr, PageAllocContext *context){
 	u32 starting = (u32)((char*)context->bitmaps + PAGE_SIZE);

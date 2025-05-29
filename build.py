@@ -1,8 +1,7 @@
 TOOL_NAME = "i686-elf"
-TOOL_PATH = "tools/" + TOOL_NAME + "/bin/"
 
-AS   = "./" + TOOL_PATH + TOOL_NAME + "-as "
-COMP = "./" + TOOL_PATH + TOOL_NAME + "-gcc "
+AS   = TOOL_NAME + "-as "
+COMP = TOOL_NAME + "-gcc "
 
 from sys import argv
 from os import makedirs
@@ -11,7 +10,7 @@ from subprocess import run as subRun
 modules = ["core", "libc", "tty"]
 
 makedirs("bin/", exist_ok=True)
-clean = "clean" in argv
+clean = "clean" in argv or len(argv) == 1
 
 def run(cmd: str) -> None: 
     print("[+]:", cmd)
